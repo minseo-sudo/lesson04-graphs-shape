@@ -187,6 +187,41 @@ def section_genre_boxplot(df: pd.DataFrame) -> None:
     show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
 
 
+def section_screen_vs_total_audi_bubble(df: pd.DataFrame) -> None:
+    st.header("2-3. 개봉일 스크린수 vs 총 관객 (첫 주 관객 버블)")
+
+    fig = px.scatter(
+        df,
+        x="first_scrn",
+        y="total_audi",
+        size="first_week_audi",
+        color="genre",
+        hover_name="movieNm",
+        custom_data=["first_week_audi"],
+        size_max=40,
+        title="개봉일 스크린수 vs 총 관객 (점 크기 = 첫 주 관객)",
+    )
+    fig.update_traces(
+        hovertemplate=(
+            "영화명: %{hovertext}<br>"
+            "개봉일 스크린수: %{x:,}개<br>"
+            "총 관객: %{y:,}명<br>"
+            "첫 주 관객: %{customdata[0]:,}명<extra></extra>"
+        )
+    )
+    fig.update_layout(
+        xaxis_title="개봉일 스크린수(개)",
+        yaxis_title="총 관객(명)",
+        xaxis_tickformat=",",
+        yaxis_tickformat=",",
+        legend_title="장르",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 👇 여기 문장을 직접 채워 넣으세요
+    show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
+
+
 # ---------------------------------------------------------------------------
 # 구역 3 이후: 그래프를 추가할 자리
 # 새 그래프는 위와 같은 형태의 함수(section_...)를 만들고
@@ -216,6 +251,9 @@ def main() -> None:
     st.divider()
 
     section_genre_boxplot(df)
+    st.divider()
+
+    section_screen_vs_total_audi_bubble(df)
     st.divider()
 
     # 다음 그래프 구역은 여기에 추가
