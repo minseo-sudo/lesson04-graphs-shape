@@ -123,7 +123,41 @@ def section_total_audi_histogram(df: pd.DataFrame) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 구역 2 이후: 그래프를 추가할 자리
+# 구역 2: 관계
+# ---------------------------------------------------------------------------
+def section_screen_vs_total_audi(df: pd.DataFrame) -> None:
+    st.header("2-1. 개봉일 스크린수 vs 총 관객")
+
+    fig = px.scatter(
+        df,
+        x="first_scrn",
+        y="total_audi",
+        color="genre",
+        hover_name="movieNm",
+        title="개봉일 스크린수와 총 관객의 관계",
+    )
+    fig.update_traces(
+        hovertemplate=(
+            "영화명: %{hovertext}<br>"
+            "개봉일 스크린수: %{x:,}개<br>"
+            "총 관객: %{y:,}명<extra></extra>"
+        )
+    )
+    fig.update_layout(
+        xaxis_title="개봉일 스크린수(개)",
+        yaxis_title="총 관객(명)",
+        xaxis_tickformat=",",
+        yaxis_tickformat=",",
+        legend_title="장르",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 👇 여기 문장을 직접 채워 넣으세요
+    show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
+
+
+# ---------------------------------------------------------------------------
+# 구역 3 이후: 그래프를 추가할 자리
 # 새 그래프는 위와 같은 형태의 함수(section_...)를 만들고
 # 아래 main()에 st.divider()와 함께 호출만 추가하면 됩니다.
 # ---------------------------------------------------------------------------
@@ -145,6 +179,9 @@ def main() -> None:
     st.divider()
 
     section_total_audi_histogram(df)
+    st.divider()
+
+    section_screen_vs_total_audi(df)
     st.divider()
 
     # 다음 그래프 구역은 여기에 추가
