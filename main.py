@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -84,6 +85,43 @@ def section_genre_movie_treemap(df: pd.DataFrame) -> None:
     show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
 
 
+def section_total_audi_histogram(df: pd.DataFrame) -> None:
+    st.header("1-3. 총 관객 분포")
+
+    fig = px.histogram(
+        df,
+        x="total_audi",
+        nbins=20,
+        title="영화별 총 관객 히스토그램",
+    )
+    fig.update_traces(
+        hovertemplate="총 관객 구간: %{x}<br>영화 수: %{y}편<extra></extra>"
+    )
+    fig.update_layout(
+        xaxis_title="총 관객(명)",
+        yaxis_title="영화 수(편)",
+        xaxis_tickformat=",",
+        bargap=0.05,
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 대부분의 영화가 몰려 있는 구간 찾기
+    counts, bin_edges = np.histogram(df["total_audi"].dropna(), bins=20)
+    max_idx = counts.argmax()
+    low, high = bin_edges[max_idx], bin_edges[max_idx + 1]
+
+    # 총 관객이 가장 많은 영화
+    top_row = df.loc[df["total_audi"].idxmax()]
+
+    # 👇 계산된 값을 바탕으로 한 문장 자리
+    show_insight(
+        f"영화 216편 가운데 가장 많은 영화가 몰려 있는 총 관객 구간은 "
+        f"약 {low:,.0f}명 ~ {high:,.0f}명 사이이며, "
+        f"총 관객이 가장 많은 영화는 '{top_row['movieNm']}'"
+        f"({top_row['total_audi']:,.0f}명)이다."
+    )
+
+
 # ---------------------------------------------------------------------------
 # 구역 2 이후: 그래프를 추가할 자리
 # 새 그래프는 위와 같은 형태의 함수(section_...)를 만들고
@@ -104,6 +142,9 @@ def main() -> None:
     st.divider()
 
     section_genre_movie_treemap(df)
+    st.divider()
+
+    section_total_audi_histogram(df)
     st.divider()
 
     # 다음 그래프 구역은 여기에 추가
