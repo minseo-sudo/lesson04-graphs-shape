@@ -66,6 +66,24 @@ def section_genre_donut(df: pd.DataFrame) -> None:
     show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
 
 
+def section_genre_movie_treemap(df: pd.DataFrame) -> None:
+    st.header("1-2. 장르 안의 영화 - 총 관객 트리맵")
+
+    fig = px.treemap(
+        df,
+        path=["genre", "movieNm"],
+        values="total_audi",
+        title="장르별 영화 총 관객 트리맵",
+    )
+    fig.update_traces(
+        hovertemplate="영화명: %{label}<br>총 관객: %{value:,}명<extra></extra>"
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 👇 여기 문장을 직접 채워 넣으세요
+    show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
+
+
 # ---------------------------------------------------------------------------
 # 구역 2 이후: 그래프를 추가할 자리
 # 새 그래프는 위와 같은 형태의 함수(section_...)를 만들고
@@ -83,6 +101,9 @@ def main() -> None:
     df = load_data()
 
     section_genre_donut(df)
+    st.divider()
+
+    section_genre_movie_treemap(df)
     st.divider()
 
     # 다음 그래프 구역은 여기에 추가
