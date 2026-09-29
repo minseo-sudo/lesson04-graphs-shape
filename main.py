@@ -240,7 +240,40 @@ def section_nation_genre_sunburst(df: pd.DataFrame) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 구역 3 이후: 그래프를 추가할 자리
+# 구역 3: 나만의 질문
+# ---------------------------------------------------------------------------
+def section_days_in_top10_vs_total_audi(df: pd.DataFrame) -> None:
+    st.header("3-1. 10위권에 오래 머문 영화는 총 관객도 많은가")
+
+    fig = px.scatter(
+        df,
+        x="days_in_top10",
+        y="total_audi",
+        color="genre",
+        hover_name="movieNm",
+        title="10위권에 오래 머문 영화는 총 관객도 많은가",
+    )
+    fig.update_traces(
+        hovertemplate=(
+            "영화명: %{hovertext}<br>"
+            "10위권 유지 일수: %{x}일<br>"
+            "총 관객: %{y:,}명<extra></extra>"
+        )
+    )
+    fig.update_layout(
+        xaxis_title="10위권 유지 일수(일)",
+        yaxis_title="총 관객(명)",
+        yaxis_tickformat=",",
+        legend_title="장르",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 👇 여기 문장을 직접 채워 넣으세요
+    show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
+
+
+# ---------------------------------------------------------------------------
+# 구역 4 이후: 그래프를 추가할 자리
 # 새 그래프는 위와 같은 형태의 함수(section_...)를 만들고
 # 아래 main()에 st.divider()와 함께 호출만 추가하면 됩니다.
 # ---------------------------------------------------------------------------
@@ -274,6 +307,9 @@ def main() -> None:
     st.divider()
 
     section_nation_genre_sunburst(df)
+    st.divider()
+
+    section_days_in_top10_vs_total_audi(df)
     st.divider()
 
     # 다음 그래프 구역은 여기에 추가
