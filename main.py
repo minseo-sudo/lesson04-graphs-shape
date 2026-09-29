@@ -156,6 +156,37 @@ def section_screen_vs_total_audi(df: pd.DataFrame) -> None:
     show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
 
 
+def section_genre_boxplot(df: pd.DataFrame) -> None:
+    st.header("2-2. 장르별 총 관객 분포 (영화 10편 이상 장르만)")
+
+    genre_counts = df["genre"].value_counts()
+    major_genres = genre_counts[genre_counts >= 10].index
+    filtered = df[df["genre"].isin(major_genres)]
+
+    fig = px.box(
+        filtered,
+        x="genre",
+        y="total_audi",
+        color="genre",
+        points="outliers",
+        hover_name="movieNm",
+        title="장르별 총 관객 박스플롯 (10편 이상 장르)",
+    )
+    fig.update_traces(
+        hovertemplate="영화명: %{hovertext}<br>총 관객: %{y:,}명<extra></extra>"
+    )
+    fig.update_layout(
+        xaxis_title="장르",
+        yaxis_title="총 관객(명)",
+        yaxis_tickformat=",",
+        showlegend=False,
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 👇 여기 문장을 직접 채워 넣으세요
+    show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
+
+
 # ---------------------------------------------------------------------------
 # 구역 3 이후: 그래프를 추가할 자리
 # 새 그래프는 위와 같은 형태의 함수(section_...)를 만들고
@@ -182,6 +213,9 @@ def main() -> None:
     st.divider()
 
     section_screen_vs_total_audi(df)
+    st.divider()
+
+    section_genre_boxplot(df)
     st.divider()
 
     # 다음 그래프 구역은 여기에 추가
